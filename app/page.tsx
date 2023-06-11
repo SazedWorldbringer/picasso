@@ -1,15 +1,19 @@
 "use client";
 
-import { useDraw } from "@/hooks/use-draw";
-import { useState } from "react";
 import { FC } from "react";
+import { useState } from "react";
+
+import { useDraw } from "@/hooks/use-draw";
+
 import { ChromePicker } from "react-color";
+
+import { Button } from "@/components/ui/button";
 
 interface pageProps { }
 
 const page: FC<pageProps> = ({ }) => {
   const [color, setColor] = useState<string>('#000')
-  const { canvasRef, onMouseDown } = useDraw(drawLine)
+  const { canvasRef, onMouseDown, clear } = useDraw(drawLine)
 
   // argument order doesn't matter when they're in curly braces
   function drawLine({ prevPoint, currentPoint, ctx }: Draw) {
@@ -33,13 +37,16 @@ const page: FC<pageProps> = ({ }) => {
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
-      <ChromePicker color={color} onChange={(e) => setColor(e.hex)} />
+      <div className="flex flex-col gap-10 pr-10">
+        <ChromePicker color={color} onChange={(e) => setColor(e.hex)}/>
+        <Button variant="outline" onClick={clear} type="button">Clear canvas</Button>
+      </div>
       <canvas
         onMouseDown={onMouseDown}
         ref={canvasRef}
         width={750}
         height={750}
-        className="border border-black rounded-md"
+        className="border border-input rounded-md"
       />
     </div>
   )
