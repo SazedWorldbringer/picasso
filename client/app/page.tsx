@@ -4,35 +4,26 @@ import { FC } from "react";
 import { useState } from "react";
 
 import { useDraw } from "@/hooks/use-draw";
+import { drawLine } from "@/lib/utils";
 
 import { ChromePicker } from "react-color";
+import { io } from "socket.io-client";
 
 import { Button } from "@/components/ui/button";
+
+const socket = io('http://localhost:3001')
 
 interface pageProps { }
 
 const page: FC<pageProps> = ({ }) => {
   const [color, setColor] = useState<string>('#000')
-  const { canvasRef, onMouseDown, clear } = useDraw(drawLine)
+  const { canvasRef, onMouseDown, clear } = useDraw(createLine)
 
   // argument order doesn't matter when they're in curly braces
-  function drawLine({ prevPoint, currentPoint, ctx }: Draw) {
-    const { x: currX, y: currY } = currentPoint
-    const lineColor = color
-    const lineWidth = 5
-
-    const startPoint = prevPoint ?? currentPoint
-    ctx.beginPath()
-    ctx.lineWidth = lineWidth
-    ctx.strokeStyle = lineColor
-    ctx.moveTo(startPoint.x, startPoint.y)
-    ctx.lineTo(currX, currY)
-    ctx.stroke()
-
-    ctx.fillStyle = lineColor
-    ctx.beginPath()
-    ctx.arc(startPoint.x, startPoint.y, 2, 0, 2 * Math.PI,)
-    ctx.fill()
+  function createLine({ prevPoint, currentPoint, ctx }: Draw) {
+    // send data to the server
+    socket.emit('draw-line', ({ prevPoint, currentPoint, color }))
+    drawLine({ prevPoint, currentPoint, ctx, color })
   }
 
   return (
