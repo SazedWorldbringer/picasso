@@ -32,6 +32,8 @@ const page: FC<pageProps> = ({ }) => {
       if (!ctx) return
       drawLine({ prevPoint, currentPoint, ctx, color })
     })
+
+    socket.on('clear', clear)
   }, [canvasRef])
 
   // argument order doesn't matter when they're in curly braces
@@ -45,7 +47,7 @@ const page: FC<pageProps> = ({ }) => {
     <div className="w-screen h-screen flex justify-center items-center">
       <div className="flex flex-col gap-10 pr-10">
         <ChromePicker color={color} onChange={(e) => setColor(e.hex)} />
-        <Button variant="outline" onClick={clear} type="button">Clear canvas</Button>
+        <Button variant="outline" onClick={() => socket.emit('clear')} type="button">Clear canvas</Button>
       </div>
       <canvas
         onMouseDown={onMouseDown}
