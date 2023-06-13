@@ -1,7 +1,6 @@
 "use client";
 
-import { FC, useEffect } from "react";
-import { useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { useDraw } from "@/hooks/use-draw";
 import { drawLine } from "@/lib/utils";
