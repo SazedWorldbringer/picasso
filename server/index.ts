@@ -24,10 +24,17 @@ type DrawLine = {
 }
 
 io.on('connection', (socket) => {
-	console.log('connection')
+	console.log('Connected')
+
+	// Draw on the canvas
+	// emit the 'draw-line' event to every client, except the client that made the changes
 	socket.on('draw-line', ({ prevPoint, currentPoint, color }: DrawLine) => {
 		socket.broadcast.emit('draw-line', { prevPoint, currentPoint, color })
 	})
+
+	// Clear canvas
+	// emit the 'clear' event to every single client
+	socket.on('clear', () => io.emit('clear'))
 })
 
 const PORT = 3001
