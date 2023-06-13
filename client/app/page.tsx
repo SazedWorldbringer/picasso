@@ -27,6 +27,25 @@ const page: FC<pageProps> = ({ }) => {
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d')
 
+    // emit 'client-ready' event when the client loads up
+    socket.emit('client-ready')
+
+    // on the 'get-canvas-state' event, send canvas data to the server
+    socket.on('get-canvas-state', () => {
+      if (!canvasRef.current?.toDataURL()) return
+      socket.emit('canvas-state', canvasRef.current.toDataURL())
+    })
+
+    // receiving the canvas state back from the server
+    socket.on('canvas-state-from-server', (state) => {
+      console.log('State received successfully')
+      const img = new Image()
+      img.src = state
+      img.onload = () => {
+        ctx?.drawImage(img, 0, 0)
+      }
+    })
+
     socket.on('draw-line', ({ prevPoint, currentPoint, color }: DrawLineProps) => {
       if (!ctx) return
       drawLine({ prevPoint, currentPoint, ctx, color })

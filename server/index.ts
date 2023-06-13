@@ -26,6 +26,16 @@ type DrawLine = {
 io.on('connection', (socket) => {
 	console.log('Connected')
 
+	// When new clients join
+	socket.on('client-ready', () => {
+		socket.broadcast.emit('get-canvas-state')
+	})
+	// receiving the canvas state on event 'canvas-state',
+	// send that state to the clients that just joined
+	socket.on('canvas-state', (state) => {
+		socket.broadcast.emit('canvas-state-from-server', state)
+	})
+
 	// Draw on the canvas
 	// emit the 'draw-line' event to every client, except the client that made the changes
 	socket.on('draw-line', ({ prevPoint, currentPoint, color }: DrawLine) => {
