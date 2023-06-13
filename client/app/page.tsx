@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useState } from "react";
 
 import { useDraw } from "@/hooks/use-draw";
@@ -15,9 +15,24 @@ const socket = io('http://localhost:3001')
 
 interface pageProps { }
 
+type DrawLineProps = {
+  prevPoint: Point | null
+  currentPoint: Point
+  color: string
+}
+
 const page: FC<pageProps> = ({ }) => {
   const [color, setColor] = useState<string>('#000')
   const { canvasRef, onMouseDown, clear } = useDraw(createLine)
+
+  useEffect(() => {
+    const ctx = canvasRef.current?.getContext('2d')
+
+    socket.on('draw-line', ({ prevPoint, currentPoint, color }: DrawLineProps) => {
+      if (!ctx) return
+      drawLine({ prevPoint, currentPoint, ctx, color })
+    })
+  }, [canvasRef])
 
   // argument order doesn't matter when they're in curly braces
   function createLine({ prevPoint, currentPoint, ctx }: Draw) {
