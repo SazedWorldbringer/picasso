@@ -52,6 +52,13 @@ const page: FC<pageProps> = ({ }) => {
     })
 
     socket.on('clear', clear)
+
+    return () => {
+        socket.off('get-canvas-state')
+        socket.off('canvas-state-from-server')
+        socket.off('draw-line')
+        socket.off('clear')
+      }
   }, [canvasRef])
 
   // argument order doesn't matter when they're in curly braces
