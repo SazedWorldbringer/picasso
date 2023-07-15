@@ -20,7 +20,7 @@ type DrawLineProps = {
   color: string
 }
 
-const page: FC<pageProps> = ({ }) => {
+const Page: FC<pageProps> = ({ }) => {
   const [color, setColor] = useState<string>('#000')
   const { canvasRef, onMouseDown, clear } = useDraw(createLine)
 
@@ -85,4 +85,4 @@ const page: FC<pageProps> = ({ }) => {
   )
 }
 
-export default page
+export default Page
